@@ -31,7 +31,7 @@ function showToast(message, type = 'success') {
 
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  const icon = type === 'success' ? '✅' : '❌';
+  const icon = type === 'success' ? '' : '❌';
   toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
   container.appendChild(toast);
 
@@ -65,14 +65,16 @@ function initNavbar() {
 
   if (menuBtn && navLinks) {
     menuBtn.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-      menuBtn.innerHTML = navLinks.classList.contains('open') ? '✕' : '☰';
+      const isOpen = navLinks.classList.toggle('open');
+      menuBtn.innerHTML = isOpen ? '✕' : '☰';
+      navbar.classList.toggle('menu-open', isOpen);
     });
 
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('open');
         menuBtn.innerHTML = '☰';
+        navbar.classList.remove('menu-open');
       });
     });
   }
@@ -141,7 +143,7 @@ function animateNumber(element, target) {
     element.textContent = Math.floor(current);
     requestAnimationFrame(update);
   }
-  
+
   if (target > 0) update();
   else element.textContent = '0';
 }
@@ -156,6 +158,7 @@ const yearNames = {
 
 let currentYear = '1';
 let searchTimeout = null;
+let currentSubjectFilter = null;
 
 async function initYearPage() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -182,6 +185,7 @@ async function initYearPage() {
   initTabs();
 
   // Load initial content
+  await loadSubjects(currentYear);
   await loadVideos(currentYear);
   updateTabCounts(currentYear);
 
@@ -243,13 +247,64 @@ async function updateTabCounts(year) {
   if (postCount) postCount.textContent = postc;
 }
 
+// ======== Load Subjects ========
+async function loadSubjects(year) {
+  const container = document.getElementById('subjects-container');
+  if (!container) return;
+
+  const subjects = await DB.getAll('subjects', year);
+  if (subjects.length > 0) {
+    container.style.display = 'block';
+
+    let html = `<div class="subjects-grid">
+      <div class="subject-card active" data-subject="">
+        <h4>الكل</h4>
+      </div>`;
+
+    subjects.forEach(sub => {
+      html += `
+        <div class="subject-card" data-subject="${sub.name}">
+          <h4>${sub.name}</h4>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+
+    // Add click event for filtering
+    const cards = container.querySelectorAll('.subject-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentSubjectFilter = card.dataset.subject || null;
+
+        // Reload current tab content
+        const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'videos';
+        const query = document.getElementById('search-input')?.value || '';
+
+        if (activeTab === 'videos') loadVideos(currentYear, query);
+        else if (activeTab === 'pdfs') loadPDFs(currentYear, query);
+        else if (activeTab === 'posts') loadPosts(currentYear, query);
+      });
+    });
+  } else {
+    container.style.display = 'none';
+  }
+}
+
 // ======== Load Videos ========
 async function loadVideos(year, query = '') {
   const container = document.getElementById('videos-container');
   if (!container) return;
 
   showLoading(container);
-  const videos = query ? await DB.search('videos', year, query) : await DB.getAll('videos', year);
+  let videos = query ? await DB.search('videos', year, query) : await DB.getAll('videos', year);
+
+  if (currentSubjectFilter) {
+    videos = videos.filter(v => v.subject === currentSubjectFilter);
+  }
 
   if (videos.length === 0) {
     container.innerHTML = `
@@ -276,6 +331,7 @@ async function loadVideos(year, query = '') {
           <h3>${video.title}</h3>
           <div class="video-meta">
             <span>📅 ${formatDate(video.createdAt)}</span>
+            ${video.createdBy ? `<span>• بواسطة: ${video.createdBy}</span>` : ''}
           </div>
         </div>
       </a>
@@ -289,7 +345,11 @@ async function loadPDFs(year, query = '') {
   if (!container) return;
 
   showLoading(container);
-  const pdfs = query ? await DB.search('pdfs', year, query) : await DB.getAll('pdfs', year);
+  let pdfs = query ? await DB.search('pdfs', year, query) : await DB.getAll('pdfs', year);
+
+  if (currentSubjectFilter) {
+    pdfs = pdfs.filter(p => p.subject === currentSubjectFilter);
+  }
 
   if (pdfs.length === 0) {
     container.innerHTML = `
@@ -310,6 +370,7 @@ async function loadPDFs(year, query = '') {
         <div class="pdf-meta">
           ${pdf.subject ? `<span>📚 ${pdf.subject}</span>` : ''}
           <span>📅 ${formatDate(pdf.createdAt)}</span>
+          ${pdf.createdBy ? `<span>• بواسطة: ${pdf.createdBy}</span>` : ''}
         </div>
       </div>
       <a href="${pdf.url}" target="_blank" rel="noopener" class="pdf-download-btn" title="تحميل">⬇</a>
@@ -323,7 +384,11 @@ async function loadPosts(year, query = '') {
   if (!container) return;
 
   showLoading(container);
-  const posts = query ? await DB.search('posts', year, query) : await DB.getAll('posts', year);
+  let posts = query ? await DB.search('posts', year, query) : await DB.getAll('posts', year);
+
+  if (currentSubjectFilter) {
+    posts = posts.filter(p => p.subject === currentSubjectFilter);
+  }
 
   if (posts.length === 0) {
     container.innerHTML = `
@@ -346,11 +411,10 @@ async function loadPosts(year, query = '') {
         </div>
       </div>
       <div class="post-content">${post.content}</div>
-      ${post.subject ? `
-        <div class="post-tags">
-          <span class="post-tag">${post.subject}</span>
-        </div>
-      ` : ''}
+      <div class="post-tags">
+        ${post.subject ? `<span class="post-tag">${post.subject}</span>` : ''}
+        ${post.createdBy ? `<span class="post-tag" style="background:rgba(108,99,255,0.15);color:var(--primary-light);">بواسطة: ${post.createdBy}</span>` : ''}
+      </div>
     </div>
   `).join('')}</div>`;
 }

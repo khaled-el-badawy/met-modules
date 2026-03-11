@@ -6,10 +6,15 @@ const DB = {
   // ======== Get all items of a type for a year ========
   async getAll(type, year) {
     try {
-      const snapshot = await db.collection(type)
-        .where('year', '==', String(year))
-        .orderBy('createdAt', 'desc')
-        .get();
+      let query = db.collection(type)
+        .where('year', '==', String(year));
+      
+      // Subjects don't need ordering by createdAt
+      if (type !== 'subjects') {
+        query = query.orderBy('createdAt', 'desc');
+      }
+      
+      const snapshot = await query.get();
       
       return snapshot.docs.map(doc => ({
         id: doc.id,

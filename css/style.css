@@ -1484,3 +1484,73 @@ select.form-control {
 .footer-policy-link:hover {
   color: #ff4a4a;
 }
+
+/* ======================================
+   Subjects Cards
+   ====================================== */
+.subjects-wrapper {
+  margin-bottom: 40px;
+}
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+.subject-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+.subject-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+}
+.subject-card:hover, .subject-card.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(108, 99, 255, 0.25);
+}
+.subject-card:hover h4, .subject-card.active h4 {
+  color: #fff;
+}
+
+
+/* Fix mobile menu background filtering */
+.navbar.menu-open {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(10, 14, 26, 0.98) !important;
+}
+@media (max-width: 768px) {
+  .navbar-links {
+    height: 100vh;
+  }
+}
+
+
+.footer-dev-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--secondary);
+  font-weight: 600;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  transition: var(--transition-fast);
+}
+.footer-dev-link:hover {
+  color: white;
+  transform: translateY(-2px);
+}
+

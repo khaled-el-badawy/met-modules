@@ -3,19 +3,24 @@
    Uses Firestore + Firebase Auth
    ====================================== */
 
+let currentAdminName = '';
+
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
-  
+
   // Protect this page - require login
   Auth.protectRoute();
 
   // Wait for auth state then init
-  Auth.onAuthChange(user => {
+  Auth.onAuthChange(async (user) => {
     if (user) {
       // Show user info
       const userEmail = document.getElementById('admin-user-email');
       if (userEmail) userEmail.textContent = user.email;
-      
+
+      // Check if admin has a name set
+      await checkAdminName(user.uid);
+
       initAdminPanel();
     }
   });
@@ -25,7 +30,73 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => Auth.logout());
   }
+
+  // Name modal save button
+  const saveNameBtn = document.getElementById('save-admin-name-btn');
+  if (saveNameBtn) {
+    saveNameBtn.addEventListener('click', saveAdminName);
+  }
 });
+
+// ======== Admin Name System ========
+async function checkAdminName(uid) {
+  try {
+    const doc = await db.collection('admins').doc(uid).get();
+    if (doc.exists && doc.data().name) {
+      currentAdminName = doc.data().name;
+      updateAdminNameDisplay();
+    } else {
+      // Show name prompt modal
+      showNameModal();
+    }
+  } catch (error) {
+    console.error('Error checking admin name:', error);
+  }
+}
+
+function showNameModal() {
+  const modal = document.getElementById('admin-name-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function hideNameModal() {
+  const modal = document.getElementById('admin-name-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function saveAdminName() {
+  const nameInput = document.getElementById('admin-name-input');
+  const name = nameInput?.value.trim();
+
+  if (!name) {
+    showToast('يرجى إدخال اسمك', 'error');
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    await db.collection('admins').doc(user.uid).set({
+      name: name,
+      email: user.email,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    currentAdminName = name;
+    updateAdminNameDisplay();
+    hideNameModal();
+    showToast('تم حفظ اسمك بنجاح ');
+  } catch (error) {
+    console.error('Error saving admin name:', error);
+    showToast('حدث خطأ في حفظ الاسم', 'error');
+  }
+}
+
+function updateAdminNameDisplay() {
+  const nameDisplay = document.getElementById('admin-display-name');
+  if (nameDisplay) nameDisplay.textContent = currentAdminName;
+}
 
 function initAdminPanel() {
   // Admin navigation
@@ -49,10 +120,81 @@ function initAdminPanel() {
   loadExistingItems('add-video');
 
   // Init forms
+  initSubjectForm();
   initVideoForm();
   initPDFForm();
   initPostForm();
+
+  // Setup dependent dropdowns
+  setupSubjectDependentDropdown('video-year', 'video-subject');
+  setupSubjectDependentDropdown('pdf-year', 'pdf-subject');
+  setupSubjectDependentDropdown('post-year', 'post-subject');
 }
+
+// ======== Subject Form ========
+function initSubjectForm() {
+  const form = document.getElementById('subject-form');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = form.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ جاري الإضافة...';
+
+    try {
+      const name = document.getElementById('subject-name').value.trim();
+      const year = document.getElementById('subject-year').value;
+
+      if (!name || !year) {
+        showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
+        return;
+      }
+
+      await DB.add('subjects', { name, year, title: name });
+      showToast('تم إضافة المادة بنجاح ');
+      form.reset();
+      loadExistingItems('add-subject');
+    } catch (error) {
+      showToast('حدث خطأ في إضافة المادة', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '➕ إضافة المادة';
+    }
+  });
+}
+
+// ======== Dependent Dropdowns ========
+async function updateSubjectDropdowns(year, dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  if (!year) {
+    dropdown.innerHTML = '<option value="">اختار المادة</option>';
+    return;
+  }
+
+  dropdown.innerHTML = '<option value="">⏳ جاري التحميل...</option>';
+  const subjects = await DB.getAll('subjects', year);
+
+  dropdown.innerHTML = '<option value="">اختار المادة</option>';
+  subjects.forEach(sub => {
+    const opt = document.createElement('option');
+    opt.value = sub.name;
+    opt.textContent = sub.name;
+    dropdown.appendChild(opt);
+  });
+}
+
+function setupSubjectDependentDropdown(yearDropdownId, subjectDropdownId) {
+  const yearDropdown = document.getElementById(yearDropdownId);
+  if (yearDropdown) {
+    yearDropdown.addEventListener('change', (e) => {
+      updateSubjectDropdowns(e.target.value, subjectDropdownId);
+    });
+  }
+}
+
 
 // ======== Video Form ========
 function initVideoForm() {
@@ -99,8 +241,8 @@ function initVideoForm() {
         return;
       }
 
-      await DB.add('videos', { title, url, subject, year });
-      showToast('تم إضافة الفيديو بنجاح ✨');
+      await DB.add('videos', { title, url, subject, year, createdBy: currentAdminName });
+      showToast('تم إضافة الفيديو بنجاح ');
       form.reset();
       if (previewContainer) previewContainer.innerHTML = '';
       loadExistingItems('add-video');
@@ -135,8 +277,8 @@ function initPDFForm() {
         return;
       }
 
-      await DB.add('pdfs', { title, url, subject, year });
-      showToast('تم إضافة ملف PDF بنجاح ✨');
+      await DB.add('pdfs', { title, url, subject, year, createdBy: currentAdminName });
+      showToast('تم إضافة ملف PDF بنجاح ');
       form.reset();
       loadExistingItems('add-pdf');
     } catch (error) {
@@ -170,8 +312,8 @@ function initPostForm() {
         return;
       }
 
-      await DB.add('posts', { content, subject, author: author || 'المحاضر', year });
-      showToast('تم إضافة البوست بنجاح ✨');
+      await DB.add('posts', { content, subject, author: author || 'المحاضر', year, createdBy: currentAdminName });
+      showToast('تم إضافة البوست بنجاح ');
       form.reset();
       loadExistingItems('add-post');
     } catch (error) {
@@ -186,8 +328,9 @@ function initPostForm() {
 // ======== Load Existing Items ========
 async function loadExistingItems(sectionId) {
   const typeMap = {
+    'add-subject': 'subjects',
     'add-video': 'videos',
-    'add-pdf': 'pdfs', 
+    'add-pdf': 'pdfs',
     'add-post': 'posts'
   };
   const type = typeMap[sectionId];
@@ -221,8 +364,8 @@ async function loadExistingItems(sectionId) {
   container.innerHTML = allItems.map(item => `
     <div class="existing-item">
       <div class="item-info">
-        <h4>${item.title || (item.content ? item.content.substring(0, 60) + '...' : '')}</h4>
-        <span>السنة ${yearLabels[item.year || item.yearNum]} ${item.subject ? '• ' + item.subject : ''} • ${formatDate(item.createdAt)}</span>
+        <h4>${item.title || item.name || (item.content ? item.content.substring(0, 60) + '...' : '')}</h4>
+        <span>السنة ${yearLabels[item.year || item.yearNum]} ${item.subject ? '• ' + item.subject : ''} • ${formatDate(item.createdAt)}${item.createdBy ? ' • بواسطة: ' + item.createdBy : ''}</span>
       </div>
       <div class="item-actions">
         <button class="btn-danger" onclick="deleteItem('${type}', '${item.id}')">
