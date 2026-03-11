@@ -1454,6 +1454,11 @@ select.form-control {
   font-weight: 800;
 }
 
+.disclaimer-emphasis {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
 /* Navbar Policy Link - Red */
 .nav-policy-link {
   color: var(--accent) !important;
