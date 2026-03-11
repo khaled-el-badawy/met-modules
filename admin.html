@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="لوحة تحكم MET Modules - إضافة وإدارة المحتوى التعليمي">
+  <title>لوحة التحكم | MET Modules</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📚</text></svg>">
+  <style>
+    .loading-spinner {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .admin-user-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(108, 99, 255, 0.08);
+      border: 1px solid rgba(108, 99, 255, 0.15);
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+    }
+
+    .admin-user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .admin-user-info .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .btn-logout {
+      padding: 8px 20px;
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: var(--transition-fast);
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 107, 107, 0.3);
+    }
+
+    /* Hide content until auth loads */
+    .admin-content {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .admin-content.loaded {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decoration -->
+  <div class="bg-decoration">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar scrolled" id="main-navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <div class="logo-icon">📚</div>
+        <span>MET Modules</span>
+      </a>
+
+      <div class="navbar-links" id="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="year.html?year=1">السنة الأولى</a>
+        <a href="year.html?year=2">السنة الثانية</a>
+        <a href="year.html?year=3">السنة الثالثة</a>
+        <a href="year.html?year=4">السنة الرابعة</a>
+        <a href="admin.html" class="btn-admin active">⚙ لوحة التحكم</a>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">☰</button>
+    </div>
+  </nav>
+
+  <!-- Admin Page -->
+  <section class="admin-page">
+    <div class="container">
+      <div class="admin-header">
+        <h1>⚙ لوحة التحكم</h1>
+        <p>إضافة وإدارة المحتوى التعليمي</p>
+      </div>
+
+      <div class="admin-content" id="admin-content">
+        <!-- User Bar -->
+        <div class="admin-user-bar">
+          <div class="admin-user-info">
+            <div class="user-avatar">👤</div>
+            <span>مسجل الدخول: <strong id="admin-user-email"></strong></span>
+          </div>
+          <button class="btn-logout" id="logout-btn">🚪 تسجيل الخروج</button>
+        </div>
+
+        <div class="admin-grid">
+          <!-- Sidebar Navigation -->
+          <aside class="admin-sidebar">
+            <h3>نوع المحتوى</h3>
+            <button class="admin-nav-item active" data-section="add-video">🎬 إضافة فيديو</button>
+            <button class="admin-nav-item" data-section="add-pdf">📄 إضافة ملف PDF</button>
+            <button class="admin-nav-item" data-section="add-post">📝 إضافة بوست</button>
+          </aside>
+
+          <!-- Form Panels -->
+          <div class="admin-forms">
+
+            <!-- Add Video Section -->
+            <div class="admin-section active" id="add-video">
+              <div class="admin-form-panel">
+                <h2>🎬 إضافة فيديو يوتيوب</h2>
+                <form id="video-form">
+                  <div class="form-group">
+                    <label for="video-title">عنوان الفيديو *</label>
+                    <input type="text" class="form-control" id="video-title" placeholder="مثال: شرح الفصل الأول - مقدمة في نظم المعلومات" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="video-url">رابط اليوتيوب *</label>
+                    <input type="url" class="form-control" id="video-url" placeholder="https://www.youtube.com/watch?v=..." required dir="ltr" style="text-align:left;">
+                    <div id="video-preview"></div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="video-year">السنة الدراسية *</label>
+                      <select class="form-control" id="video-year" required>
+                        <option value="">اختار السنة</option>
+                        <option value="1">السنة الأولى</option>
+                        <option value="2">السنة الثانية</option>
+                        <option value="3">السنة الثالثة</option>
+                        <option value="4">السنة الرابعة</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="video-subject">اسم المادة</label>
+                      <input type="text" class="form-control" id="video-subject" placeholder="مثال: مقدمة نظم معلومات">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn-submit">➕ إضافة الفيديو</button>
+                </form>
+              </div>
+
+              <div class="existing-items">
+                <h3>الفيديوهات الموجودة</h3>
+                <div id="existing-videos"></div>
+              </div>
+            </div>
+
+            <!-- Add PDF Section -->
+            <div class="admin-section" id="add-pdf">
+              <div class="admin-form-panel">
+                <h2>📄 إضافة ملف PDF</h2>
+                <form id="pdf-form">
+                  <div class="form-group">
+                    <label for="pdf-title">عنوان الملف *</label>
+                    <input type="text" class="form-control" id="pdf-title" placeholder="مثال: ملخص الفصل الثاني - قواعد البيانات" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="pdf-url">رابط الملف (Google Drive, Dropbox, إلخ) *</label>
+                    <input type="url" class="form-control" id="pdf-url" placeholder="https://drive.google.com/..." required dir="ltr" style="text-align:left;">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="pdf-year">السنة الدراسية *</label>
+                      <select class="form-control" id="pdf-year" required>
+                        <option value="">اختار السنة</option>
+                        <option value="1">السنة الأولى</option>
+                        <option value="2">السنة الثانية</option>
+                        <option value="3">السنة الثالثة</option>
+                        <option value="4">السنة الرابعة</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="pdf-subject">اسم المادة</label>
+                      <input type="text" class="form-control" id="pdf-subject" placeholder="مثال: قواعد البيانات">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn-submit">➕ إضافة الملف</button>
+                </form>
+              </div>
+
+              <div class="existing-items">
+                <h3>الملفات الموجودة</h3>
+                <div id="existing-pdfs"></div>
+              </div>
+            </div>
+
+            <!-- Add Post Section -->
+            <div class="admin-section" id="add-post">
+              <div class="admin-form-panel">
+                <h2>📝 إضافة بوست</h2>
+                <form id="post-form">
+                  <div class="form-group">
+                    <label for="post-content">محتوى البوست *</label>
+                    <textarea class="form-control" id="post-content" placeholder="اكتب البوست هنا... يمكنك كتابة إعلانات، نصائح، أو أي محتوى تعليمي" required rows="5"></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="post-year">السنة الدراسية *</label>
+                      <select class="form-control" id="post-year" required>
+                        <option value="">اختار السنة</option>
+                        <option value="1">السنة الأولى</option>
+                        <option value="2">السنة الثانية</option>
+                        <option value="3">السنة الثالثة</option>
+                        <option value="4">السنة الرابعة</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="post-subject">اسم المادة (اختياري)</label>
+                      <input type="text" class="form-control" id="post-subject" placeholder="مثال: تحليل نظم">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="post-author">اسم الكاتب</label>
+                    <input type="text" class="form-control" id="post-author" placeholder="الاسم (اختياري - الافتراضي: المحاضر)">
+                  </div>
+
+                  <button type="submit" class="btn-submit">➕ نشر البوست</button>
+                </form>
+              </div>
+
+              <div class="existing-items">
+                <h3>البوستات الموجودة</h3>
+                <div id="existing-posts"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo-icon">📚</div>
+          <span>MET Modules</span>
+        </div>
+        <p class="footer-text">
+          منصة تعليمية مجانية لطلاب نظم معلومات الأعمال
+          <br>
+          جميع الحقوق محفوظة © 2026
+        </p>
+        <div class="footer-charity">
+          🤲 مشروع خيري لوجه الله تعالى
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+
+  <script>
+    // Show admin content after auth loads
+    Auth.onAuthChange(user => {
+      if (user) {
+        document.getElementById('admin-content')?.classList.add('loaded');
+      }
+    });
+  </script>
+</body>
+</html>

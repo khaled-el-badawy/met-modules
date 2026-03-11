@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="محتوى تعليمي لطلاب نظم معلومات الأعمال - فيديوهات وملفات PDF وبوستات">
+  <title>MET Modules</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📚</text></svg>">
+  <style>
+    .loading-spinner {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decoration -->
+  <div class="bg-decoration">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="main-navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <div class="logo-icon">📚</div>
+        <span>MET Modules</span>
+      </a>
+
+      <div class="navbar-links" id="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="year.html?year=1">السنة الأولى</a>
+        <a href="year.html?year=2">السنة الثانية</a>
+        <a href="year.html?year=3">السنة الثالثة</a>
+        <a href="year.html?year=4">السنة الرابعة</a>
+        <a href="login.html" class="btn-admin">⚙ لوحة التحكم</a>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">☰</button>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">الرئيسية</a>
+      <span class="separator">/</span>
+      <span id="breadcrumb-year">السنة الأولى</span>
+    </div>
+  </div>
+
+  <!-- Year Page Header -->
+  <section class="year-page-header">
+    <div class="container">
+      <h1 id="year-title">السنة الأولى</h1>
+      <p id="year-subtitle">محتوى السنة الأولى - نظم معلومات الأعمال</p>
+    </div>
+  </section>
+
+  <!-- Search Bar -->
+  <div class="container">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="ابحث في المحتوى...">
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <div class="container">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="videos" id="tab-btn-videos">
+          🎬 فيديوهات
+          <span class="tab-count">0</span>
+        </button>
+        <button class="tab-btn" data-tab="pdfs" id="tab-btn-pdfs">
+          📄 ملفات PDF
+          <span class="tab-count">0</span>
+        </button>
+        <button class="tab-btn" data-tab="posts" id="tab-btn-posts">
+          📝 بوستات
+          <span class="tab-count">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Contents -->
+  <main class="container">
+    <div class="tab-content active" id="tab-videos">
+      <div id="videos-container"></div>
+    </div>
+    <div class="tab-content" id="tab-pdfs">
+      <div id="pdfs-container"></div>
+    </div>
+    <div class="tab-content" id="tab-posts">
+      <div id="posts-container"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo-icon">📚</div>
+          <span>MET Modules</span>
+        </div>
+        <p class="footer-text">
+          منصة تعليمية مجانية لطلاب نظم معلومات الأعمال
+          <br>
+          جميع الحقوق محفوظة © 2026
+        </p>
+        <div class="footer-charity">
+          🤲 مشروع خيري لوجه الله تعالى
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
