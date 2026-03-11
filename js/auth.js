@@ -1,5 +1,5 @@
 /* ======================================
-   MET Modules - Authentication Manager
+   Study With Me - Authentication Manager
    ====================================== */
 
 const Auth = {

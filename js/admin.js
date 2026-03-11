@@ -1,5 +1,5 @@
 /* ======================================
-   MET Modules - Admin Panel Logic
+   Study With Me - Admin Panel Logic
    Uses Firestore + Firebase Auth
    ====================================== */
 

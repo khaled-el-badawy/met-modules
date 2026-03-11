@@ -1,5 +1,5 @@
 /* ======================================
-   MET Modules - Database Manager (Firestore)
+   Study With Me - Database Manager (Firestore)
    ====================================== */
 
 const DB = {

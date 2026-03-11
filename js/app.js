@@ -1,5 +1,5 @@
 /* ======================================
-   MET Modules - Main Application Logic
+   Study With Me - Main Application Logic
    Uses Firestore for data storage
    ====================================== */
 
@@ -169,7 +169,7 @@ async function initYearPage() {
   if (pageTitle) pageTitle.textContent = yearNames[currentYear] || 'السنة الأولى';
   if (pageSubtitle) pageSubtitle.textContent = `محتوى ${yearNames[currentYear]} - نظم معلومات الأعمال`;
   if (breadcrumbYear) breadcrumbYear.textContent = yearNames[currentYear];
-  document.title = `${yearNames[currentYear]} | MET Modules`;
+  document.title = `${yearNames[currentYear]} | Study With Me`;
 
   // Highlight active nav link
   document.querySelectorAll('.navbar-links a').forEach(link => {

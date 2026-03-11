@@ -1,4 +1,4 @@
-// Firebase Configuration - MET Modules
+// Firebase Configuration - Study With Me
 const firebaseConfig = {
   apiKey: "AIzaSyCpWWbHuypdWtMMBrmY4M53leDGF2Hucc0",
   authDomain: "met-modules.firebaseapp.com",
