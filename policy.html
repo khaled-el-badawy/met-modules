@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="سياسة الاستخدام - MET Modules - شروط وأحكام استخدام المحتوى التعليمي">
+  <title>سياسة الاستخدام | MET Modules</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📚</text></svg>">
+  <style>
+    .policy-page {
+      padding: 140px 24px 80px;
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
+
+    .policy-card {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .policy-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-warm);
+    }
+
+    .policy-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .policy-header-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 107, 107, 0.12);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 20px;
+    }
+
+    .policy-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .policy-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .policy-section {
+      margin-bottom: 36px;
+    }
+
+    .policy-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .policy-section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .policy-section-title .section-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .policy-section-title .section-icon.warning {
+      background: rgba(255, 107, 107, 0.12);
+    }
+
+    .policy-section-title .section-icon.info {
+      background: rgba(108, 99, 255, 0.12);
+    }
+
+    .policy-section-title .section-icon.success {
+      background: rgba(74, 222, 128, 0.12);
+    }
+
+    .policy-section-title .section-icon.danger {
+      background: rgba(255, 59, 48, 0.15);
+    }
+
+    .policy-section p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 2;
+      margin-bottom: 12px;
+    }
+
+    .policy-section ul {
+      padding-right: 20px;
+    }
+
+    .policy-section ul li {
+      color: var(--text-secondary);
+      font-size: 0.93rem;
+      line-height: 2;
+      position: relative;
+      padding-right: 16px;
+    }
+
+    .policy-section ul li::before {
+      content: '●';
+      position: absolute;
+      right: 0;
+      color: var(--primary-light);
+      font-size: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .policy-highlight {
+      background: rgba(255, 107, 107, 0.08);
+      border: 1px solid rgba(255, 107, 107, 0.2);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .policy-highlight p {
+      color: var(--accent) !important;
+      font-weight: 600;
+      font-size: 0.95rem !important;
+      margin-bottom: 0 !important;
+    }
+
+    .policy-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 36px;
+      padding: 12px 28px;
+      background: var(--gradient-primary);
+      color: white;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition-normal);
+      box-shadow: 0 0 15px rgba(108, 99, 255, 0.3);
+    }
+
+    .policy-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(108, 99, 255, 0.5);
+    }
+
+    .policy-footer-note {
+      text-align: center;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 640px) {
+      .policy-card {
+        padding: 32px 20px;
+      }
+      .policy-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decoration -->
+  <div class="bg-decoration">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar scrolled" id="main-navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <div class="logo-icon">📚</div>
+        <span>MET Modules</span>
+      </a>
+
+      <div class="navbar-links" id="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="year.html?year=1">الفرقة الأولى</a>
+        <a href="year.html?year=2">الفرقة الثانية</a>
+        <a href="year.html?year=3">الفرقة الثالثة</a>
+        <a href="year.html?year=4">الفرقة الرابعة</a>
+        <a href="policy.html" class="nav-policy-link active">سياسة الاستخدام</a>
+        <a href="login.html" class="btn-admin">تسجيل الدخول</a>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="القائمة">☰</button>
+    </div>
+  </nav>
+
+  <!-- Policy Page -->
+  <main class="policy-page">
+    <div class="policy-card">
+
+      <!-- Header -->
+      <div class="policy-header">
+        <div class="policy-header-icon">📜</div>
+        <h1>سياسة الاستخدام</h1>
+        <p>شروط وأحكام استخدام محتوى منصة MET Modules</p>
+      </div>
+
+      <!-- Section 1: About Content -->
+      <div class="policy-section">
+        <div class="policy-section-title">
+          <div class="section-icon info">📖</div>
+          <span>طبيعة المحتوى</span>
+        </div>
+        <p>جميع المحتوى المعروض على هذا الموقع — بما يشمل الفيديوهات وملفات PDF والبوستات — هو <strong>اجتهادات طلاب متفوقين</strong> في قسم نظم معلومات الأعمال. هذا المحتوى مُعد لأغراض المساعدة في المذاكرة فقط ولا يُغني عن المصادر الأكاديمية الرسمية.</p>
+      </div>
+
+      <!-- Section 2: Academic Commitment -->
+      <div class="policy-section">
+        <div class="policy-section-title">
+          <div class="section-icon success">🎓</div>
+          <span>الالتزام الأكاديمي</span>
+        </div>
+        <p>نؤكد على أهمية الالتزام بالمسار الأكاديمي الرسمي. يُرجى مراعاة التالي:</p>
+        <ul>
+          <li>الحضور المنتظم في المحاضرات والسكاشن بالجامعة هو الأساس ولا يمكن تعويضه</li>
+          <li>الاعتماد على كتاب المقرر الرسمي المعتمد من القسم</li>
+          <li>اتباع تعليمات وتوجيهات أستاذ المادة قبل أي مصدر آخر</li>
+          <li>استخدام هذا الموقع كأداة مساعدة إضافية وليس كبديل عن الحضور والمذاكرة الجادة</li>
+        </ul>
+        <div class="policy-highlight">
+          <p>⚠️ لا يُفضل الاعتماد على هذا المحتوى بشكل كامل وإهمال الحضور في الجامعة. يُرجى الالتزام بكتاب المقرر وتعليمات أستاذ المادة قبل أي شيء.</p>
+        </div>
+      </div>
+
+      <!-- Section 3: No Profit -->
+      <div class="policy-section">
+        <div class="policy-section-title">
+          <div class="section-icon danger">🚫</div>
+          <span>حظر البيع والتربح</span>
+        </div>
+        <p>هذا المحتوى مشروع خيري بالكامل، ويخضع للشروط التالية بشكل صارم وغير قابل للتفاوض:</p>
+        <ul>
+          <li><strong>يُحظر حظرًا قاطعًا</strong> بيع هذا المحتوى أو أي جزء منه بأي شكل من الأشكال</li>
+          <li><strong>يُحظر حظرًا قاطعًا</strong> التربح من هذا المحتوى سواء بشكل مباشر أو غير مباشر</li>
+          <li><strong>يُحظر</strong> إعادة نشره على منصات تجارية أو مدفوعة أو تضمينه في أي منتج يُباع</li>
+          <li><strong>يُسمح</strong> باستخدامه للمنفعة الشخصية في المذاكرة والتعلم</li>
+          <li><strong>يُسمح</strong> بمشاركته للمنفعة العامة بشرط أن يكون ذلك مجانيًا بالكامل</li>
+        </ul>
+        <div class="policy-highlight">
+          <p>🚫 أي محاولة لبيع هذا المحتوى أو التربح منه بأي وسيلة كانت تُعد انتهاكًا صريحًا لحقوق النشر وسيتم التعامل معها بكل حزم.</p>
+        </div>
+      </div>
+
+      <!-- Section 4: Disclaimer -->
+      <div class="policy-section">
+        <div class="policy-section-title">
+          <div class="section-icon warning">⚖️</div>
+          <span>إخلاء المسؤولية</span>
+        </div>
+        <p>لا يتحمل القائمون على هذا الموقع أي مسؤولية عن أي أخطاء أو نقص في المحتوى المعروض. المحتوى هو اجتهاد شخصي من الطلاب وقد لا يكون شاملاً أو محدثًا بالكامل. المرجع الأساسي والنهائي هو المقرر الرسمي وتعليمات أستاذ المادة.</p>
+      </div>
+
+      <!-- Footer Note -->
+      <div class="policy-footer-note">
+        <p>🤲 هذا مشروع خيري لوجه الله تعالى — نسأل الله أن ينفع به جميع الطلاب</p>
+      </div>
+
+      <!-- Back Button -->
+      <div style="text-align: center;">
+        <a href="index.html" class="policy-back">→ العودة للصفحة الرئيسية</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo-icon">📚</div>
+          <span>MET Modules</span>
+        </div>
+        <p class="footer-text">
+          منصة تعليمية مجانية لطلاب نظم معلومات الأعمال
+          <br>
+          جميع الحقوق محفوظة © 2026
+        </p>
+        <div class="footer-charity">
+          🤲 مشروع خيري لوجه الله تعالى
+        </div>
+        <a href="policy.html" class="footer-policy-link">📜 سياسة الاستخدام</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const navLinks = document.getElementById('nav-links');
+    if (mobileBtn && navLinks) {
+      mobileBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('mobile-open');
+        mobileBtn.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+      });
+    }
+  </script>
+</body>
+</html>

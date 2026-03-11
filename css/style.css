@@ -250,7 +250,7 @@ input, textarea, select {
 .navbar-links a {
   padding: 8px 18px;
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
+  /* color: var(--text-secondary); */
   font-weight: 500;
   font-size: 0.95rem;
   transition: var(--transition-fast);
@@ -278,7 +278,7 @@ input, textarea, select {
 .btn-admin {
   padding: 8px 20px;
   background: var(--gradient-primary);
-  color: white;
+  
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.9rem;
@@ -1427,4 +1427,55 @@ select.form-control {
 .search-bar .search-icon {
   color: var(--text-muted);
   font-size: 1.1rem;
+}
+
+/* ======================================
+   Disclaimer Notice
+   ====================================== */
+.disclaimer-notice {
+  position: relative;
+  z-index: 1;
+  padding: 20px 0;
+  background: rgba(255, 107, 107, 0.06);
+  border-top: 1px solid rgba(255, 107, 107, 0.2);
+  border-bottom: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.disclaimer-notice p {
+  font-size: 0.82rem;
+  color: var(--accent);
+  text-align: center;
+  line-height: 1.9;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.disclaimer-notice strong {
+  font-weight: 800;
+}
+
+/* Navbar Policy Link - Red */
+.nav-policy-link {
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+}
+
+.nav-policy-link:hover,
+.nav-policy-link.active {
+  color: #ff4a4a !important;
+  background: rgba(255, 107, 107, 0.1) !important;
+}
+
+/* Footer Policy Link - Red */
+.footer-policy-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--accent);
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.footer-policy-link:hover {
+  color: #ff4a4a;
 }
