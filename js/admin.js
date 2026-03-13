@@ -4,6 +4,8 @@
    ====================================== */
 
 let currentAdminName = '';
+let currentUserRole = 'admin';
+let currentUserUid = '';
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
@@ -40,13 +42,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ======== Admin Name System ========
 async function checkAdminName(uid) {
+  currentUserUid = uid;
   try {
-    const doc = await db.collection('admins').doc(uid).get();
-    if (doc.exists && doc.data().name) {
-      currentAdminName = doc.data().name;
-      updateAdminNameDisplay();
+    const docRef = db.collection('admins').doc(uid);
+    const doc = await docRef.get();
+    if (doc.exists) {
+      const data = doc.data();
+      currentAdminName = data.name || '';
+      currentUserRole = data.role || 'admin'; // Legacy users are admins by default
+
+      // Patch legacy docs with missing role or createdAt
+      if (!data.role || !data.createdAt) {
+        try {
+          await docRef.set({
+            role: currentUserRole,
+            createdAt: data.createdAt || firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        } catch (err) {
+          console.warn('Could not patch legacy user:', err);
+        }
+      }
+
+      if (currentUserRole === 'admin' || currentUserRole === 'super_admin') {
+        const navAddUser = document.getElementById('nav-add-user');
+        if (navAddUser) navAddUser.style.display = 'block';
+      }
+      if (currentAdminName) {
+        updateAdminNameDisplay();
+      } else {
+        showNameModal();
+      }
     } else {
-      // Show name prompt modal
+      // New user, defaults to admin if none specified, but better to set later
+      currentUserRole = 'contributor'; // Safe default if doc missing
       showNameModal();
     }
   } catch (error) {
@@ -124,6 +152,7 @@ function initAdminPanel() {
   initVideoForm();
   initPDFForm();
   initPostForm();
+  initUserForm();
 
   // Setup dependent dropdowns
   setupSubjectDependentDropdown('video-year', 'video-subject');
@@ -241,7 +270,7 @@ function initVideoForm() {
         return;
       }
 
-      await DB.add('videos', { title, url, subject, year, createdBy: currentAdminName });
+      await DB.add('videos', { title, url, subject, year, createdBy: currentAdminName, createdByUid: currentUserUid });
       showToast('تم إضافة الفيديو بنجاح ');
       form.reset();
       if (previewContainer) previewContainer.innerHTML = '';
@@ -277,7 +306,7 @@ function initPDFForm() {
         return;
       }
 
-      await DB.add('pdfs', { title, url, subject, year, createdBy: currentAdminName });
+      await DB.add('pdfs', { title, url, subject, year, createdBy: currentAdminName, createdByUid: currentUserUid });
       showToast('تم إضافة ملف PDF بنجاح ');
       form.reset();
       loadExistingItems('add-pdf');
@@ -312,7 +341,7 @@ function initPostForm() {
         return;
       }
 
-      await DB.add('posts', { content, subject, author: author || 'المحاضر', year, createdBy: currentAdminName });
+      await DB.add('posts', { content, subject, author: author || 'المحاضر', year, createdBy: currentAdminName, createdByUid: currentUserUid });
       showToast('تم إضافة البوست بنجاح ');
       form.reset();
       loadExistingItems('add-post');
@@ -325,16 +354,88 @@ function initPostForm() {
   });
 }
 
+// ======== User Form (Admin Only) ========
+function initUserForm() {
+  const form = document.getElementById('user-form');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (currentUserRole !== 'admin' && currentUserRole !== 'super_admin') {
+      showToast('ليس لديك صلاحية لإضافة مستخدمين', 'error');
+      return;
+    }
+
+    const submitBtn = form.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ جاري الإضافة...';
+
+    try {
+      const email = document.getElementById('new-user-email').value.trim();
+      const password = document.getElementById('new-user-password').value;
+      const role = document.getElementById('new-user-role').value;
+
+      if (!email || password.length < 6) {
+        showToast('تم إدخال بيانات غير صحيحة', 'error');
+        return;
+      }
+
+      // Create a secondary app to not sign out current admin
+      let secondaryApp;
+      try {
+        secondaryApp = firebase.app("Secondary");
+      } catch (e) {
+        secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
+      }
+      const secondaryAuth = secondaryApp.auth();
+
+      const userCredential = await secondaryAuth.createUserWithEmailAndPassword(email, password);
+      const newUid = userCredential.user.uid;
+
+      // Add to admins collection
+      await db.collection('admins').doc(newUid).set({
+        email: email,
+        role: role,
+        name: '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // إعطاء مهلة صغيرة جداً لفايربيز لإكمال مهام الخلفية (مثل accounts:lookup) لمنع خطأ الـ Console
+      await new Promise(resolve => setTimeout(resolve, 800));
+      await secondaryAuth.signOut();
+
+      showToast('تم إضافة المستخدم بنجاح ');
+      form.reset();
+      loadExistingItems('add-user');
+    } catch (error) {
+      console.error(error);
+      let msg = 'حدث خطأ في إضافة المستخدم';
+      if (error.code === 'auth/email-already-in-use') {
+        msg = 'البريد الإلكتروني مستخدم بالفعل';
+      } else if (error.code === 'auth/weak-password') {
+        msg = 'كلمة المرور ضعيفة';
+      } else if (error.code === 'permission-denied') {
+        msg = 'ليس لديك صلاحية كافية (يرجى تتحديث الصلاحيات Rules)';
+      }
+      showToast(msg, 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '➕ إضافة المستخدم';
+    }
+  });
+}
+
 // ======== Load Existing Items ========
 async function loadExistingItems(sectionId) {
   const typeMap = {
     'add-subject': 'subjects',
     'add-video': 'videos',
     'add-pdf': 'pdfs',
-    'add-post': 'posts'
+    'add-post': 'posts',
+    'add-user': 'admins'
   };
   const type = typeMap[sectionId];
-  const container = document.getElementById(`existing-${type}`);
+  const container = document.getElementById(type === 'admins' ? 'existing-users' : `existing-${type}`);
   if (!container) return;
 
   container.innerHTML = `
@@ -346,9 +447,30 @@ async function loadExistingItems(sectionId) {
   const yearLabels = { '1': 'أولى', '2': 'تانية', '3': 'تالتة', '4': 'رابعة' };
 
   let allItems = [];
-  for (let y = 1; y <= 4; y++) {
-    const items = await DB.getAll(type, y);
-    items.forEach(item => allItems.push({ ...item, yearNum: y }));
+
+  if (type === 'admins') {
+    if (currentUserRole !== 'admin' && currentUserRole !== 'super_admin') {
+      container.innerHTML = '<div style="padding:20px;">ليس لديك صلاحية لعرض هذا المحتوى.</div>';
+      return;
+    }
+    try {
+      const snapshot = await db.collection('admins').get();
+      snapshot.forEach(doc => allItems.push({ id: doc.id, ...doc.data() }));
+
+      // Sort manually so users without createdAt don't disappear
+      allItems.sort((a, b) => {
+        const t1 = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : 0) : 0;
+        const t2 = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : 0) : 0;
+        return t2 - t1;
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  } else {
+    for (let y = 1; y <= 4; y++) {
+      const items = await DB.getAll(type, y);
+      items.forEach(item => allItems.push({ ...item, yearNum: y }));
+    }
   }
 
   if (allItems.length === 0) {
@@ -361,19 +483,50 @@ async function loadExistingItems(sectionId) {
     return;
   }
 
-  container.innerHTML = allItems.map(item => `
-    <div class="existing-item">
-      <div class="item-info">
-        <h4>${item.title || item.name || (item.content ? item.content.substring(0, 60) + '...' : '')}</h4>
-        <span>السنة ${yearLabels[item.year || item.yearNum]} ${item.subject ? '• ' + item.subject : ''} • ${formatDate(item.createdAt)}${item.createdBy ? ' • بواسطة: ' + item.createdBy : ''}</span>
+  container.innerHTML = allItems.map(item => {
+    if (type === 'admins') {
+      let roleLabel = 'مساهم';
+      if (item.role === 'admin') roleLabel = 'مدير';
+      if (item.role === 'super_admin') roleLabel = 'مدير عام (مؤسس)';
+
+      let actionButtons = '';
+      if (item.id === currentUserUid) {
+        actionButtons = '<span style="color:var(--text-muted);font-size:0.8rem;">(حسابك)</span>';
+      } else if (item.role === 'super_admin' && currentUserRole !== 'super_admin') {
+        actionButtons = '<span style="color:var(--text-muted);font-weight:bold;font-size:0.8rem;">👑 مؤسس النظام</span>';
+      } else {
+        actionButtons = `<button class="btn-danger" style="margin-right:8px;" onclick="deleteItem('${type}', '${item.id}')">حذف 🗑</button> 
+                          <button class="btn-submit" style="padding:4px 8px;font-size:0.8rem;" onclick="editAdminRole('${item.id}', '${item.role}')">تعديل الصلاحية ✏</button>`;
+      }
+
+      return `
+        <div class="existing-item">
+          <div class="item-info">
+            <h4>${item.name || 'بدون اسم'} (${roleLabel})</h4>
+            <span>البريد: ${item.email}</span>
+          </div>
+          <div class="item-actions">
+            ${actionButtons}
+          </div>
+        </div>
+      `;
+    }
+
+    // Role-based deletion logic for content
+    const canDelete = currentUserRole === 'admin' || currentUserRole === 'super_admin' || (item.createdBy === currentAdminName) || (item.createdByUid === currentUserUid);
+
+    return `
+      <div class="existing-item">
+        <div class="item-info">
+          <h4>${item.title || item.name || (item.content ? item.content.substring(0, 60) + '...' : '')}</h4>
+          <span>السنة ${yearLabels[item.year || item.yearNum]} ${item.subject ? '• ' + item.subject : ''} • ${formatDate(item.createdAt)}${item.createdBy ? ' • بواسطة: ' + item.createdBy : ''}</span>
+        </div>
+        <div class="item-actions">
+          ${canDelete ? `<button class="btn-danger" onclick="deleteItem('${type}', '${item.id}')">حذف 🗑</button>` : ''}
+        </div>
       </div>
-      <div class="item-actions">
-        <button class="btn-danger" onclick="deleteItem('${type}', '${item.id}')">
-          حذف 🗑
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ======== Delete Item (global) ========
@@ -382,10 +535,45 @@ async function deleteItem(type, id) {
     try {
       await DB.delete(type, id);
       showToast('تم الحذف بنجاح');
+
+      if (type === 'admins') {
+        alert("تنبيه هام: تم حذف صلاحيات المستخدم من النظام (لن يتمكن من الدخول كمدير)، ولكن الإيميل نفسه لا يزال مسجلاً في الفايربيز (Authentication) كحساب فارغ. لحذفه نهائياً يرجى حذفه يدوياً من قسم Authentication في لوحة تحكم الفايربيز.");
+      }
+
       const activeSection = document.querySelector('.admin-section.active');
       if (activeSection) loadExistingItems(activeSection.id);
     } catch (error) {
-      showToast('حدث خطأ في الحذف', 'error');
+      showToast('ليس لديك صلاحية', 'error');
     }
   }
 }
+
+// ======== Edit Role ========
+window.editAdminRole = async function (id, currentRole) {
+  if (currentRole === 'super_admin' && currentUserRole !== 'super_admin') {
+    showToast('لا يمكنك تعديل صلاحية مؤسس النظام', 'error');
+    return;
+  }
+
+  const newRole = prompt('ادخل الصلاحية الجديدة (مدير / مساهم):', currentRole === 'admin' ? 'مدير' : 'مساهم');
+  if (!newRole) return;
+
+  const roleCode = (newRole.trim() === 'مدير') ? 'admin' : (newRole.trim() === 'مساهم' ? 'contributor' : null);
+  if (!roleCode) {
+    showToast('يجب كتابة "مدير" أو "مساهم"', 'error');
+    return;
+  }
+
+  try {
+    await db.collection('admins').doc(id).update({
+      role: roleCode,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast('تم تحديث الصلاحية بنجاح');
+    const activeSection = document.querySelector('.admin-section.active');
+    if (activeSection) loadExistingItems(activeSection.id);
+  } catch (error) {
+    console.error(error);
+    showToast('حدث خطأ في تحديث الصلاحية', 'error');
+  }
+};

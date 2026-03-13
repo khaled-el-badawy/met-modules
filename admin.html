@@ -225,6 +225,7 @@
             <button class="admin-nav-item active" data-section="add-video">🎬 إضافة فيديو</button>
             <button class="admin-nav-item" data-section="add-pdf">📄 إضافة ملف PDF</button>
             <button class="admin-nav-item" data-section="add-post">📝 إضافة بوست</button>
+            <button class="admin-nav-item admin-only" id="nav-add-user" data-section="add-user" style="display:none;">👥 إضافة مستخدم</button>
           </aside>
 
           <!-- Form Panels -->
@@ -398,6 +399,39 @@
               <div class="existing-items">
                 <h3>البوستات الموجودة</h3>
                 <div id="existing-posts"></div>
+              </div>
+            </div>
+
+            <!-- Add User Section (Admin Only) -->
+            <div class="admin-section" id="add-user">
+              <div class="admin-form-panel">
+                <h2>👥 إضافة مستخدم جديد</h2>
+                <form id="user-form">
+                  <div class="form-group">
+                    <label for="new-user-email">البريد الإلكتروني *</label>
+                    <input type="email" class="form-control" id="new-user-email" placeholder="example@email.com" required dir="ltr" style="text-align:left;">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="new-user-password">كلمة المرور * (6 أحرف على الأقل)</label>
+                    <input type="password" class="form-control" id="new-user-password" placeholder="******" required dir="ltr">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="new-user-role">الصلاحية *</label>
+                    <select class="form-control" id="new-user-role" required>
+                      <option value="contributor">مساهم (إضافة وحذف محتواه فقط)</option>
+                      <option value="admin">مدير (صلاحيات كاملة وإضافة مستخدمين)</option>
+                    </select>
+                  </div>
+
+                  <button type="submit" class="btn-submit">➕ إضافة المستخدم</button>
+                </form>
+              </div>
+
+              <div class="existing-items">
+                <h3>المستخدمين الموجودين</h3>
+                <div id="existing-users"></div>
               </div>
             </div>
 
