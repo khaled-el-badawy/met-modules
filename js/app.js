@@ -31,7 +31,7 @@ function showToast(message, type = 'success') {
 
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  const icon = type === 'success' ? '' : '❌';
+  const icon = type === 'success' ? '' : '';
   toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
   container.appendChild(toast);
 
@@ -309,7 +309,7 @@ async function loadVideos(year, query = '') {
   if (videos.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">🎬</div>
+        <div class="empty-icon"></div>
         <h3>لا توجد فيديوهات بعد</h3>
         <p>سيتم إضافة فيديوهات قريباً إن شاء الله</p>
       </div>
@@ -324,13 +324,13 @@ async function loadVideos(year, query = '') {
       <a href="${video.url}" target="_blank" rel="noopener" class="video-card animate-in">
         <div class="video-thumbnail">
           ${thumbnail ? `<img src="${thumbnail}" alt="${video.title}" loading="lazy">` : ''}
-          <div class="video-play-btn">▶</div>
+          <div class="video-play-btn"></div>
         </div>
         <div class="video-info">
           ${video.subject ? `<span class="subject-tag">${video.subject}</span>` : ''}
           <h3>${video.title}</h3>
           <div class="video-meta">
-            <span>📅 ${formatDate(video.createdAt)}</span>
+            <span> ${formatDate(video.createdAt)}</span>
             ${video.createdBy ? `<span>• بواسطة: ${video.createdBy}</span>` : ''}
           </div>
         </div>
@@ -354,7 +354,7 @@ async function loadPDFs(year, query = '') {
   if (pdfs.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">📄</div>
+        <div class="empty-icon"></div>
         <h3>لا توجد ملفات PDF بعد</h3>
         <p>سيتم إضافة ملفات قريباً إن شاء الله</p>
       </div>
@@ -364,16 +364,16 @@ async function loadPDFs(year, query = '') {
 
   container.innerHTML = `<div class="content-grid">${pdfs.map(pdf => `
     <div class="pdf-card animate-in">
-      <div class="pdf-icon">📄</div>
+      <div class="pdf-icon"></div>
       <div class="pdf-info">
         <h3>${pdf.title}</h3>
         <div class="pdf-meta">
-          ${pdf.subject ? `<span>📚 ${pdf.subject}</span>` : ''}
-          <span>📅 ${formatDate(pdf.createdAt)}</span>
+          ${pdf.subject ? `<span> ${pdf.subject}</span>` : ''}
+          <span> ${formatDate(pdf.createdAt)}</span>
           ${pdf.createdBy ? `<span>• بواسطة: ${pdf.createdBy}</span>` : ''}
         </div>
       </div>
-      <a href="${pdf.url}" target="_blank" rel="noopener" class="pdf-download-btn" title="تحميل">⬇</a>
+      <a href="${pdf.url}" target="_blank" rel="noopener" class="pdf-download-btn" title="تحميل"></a>
     </div>
   `).join('')}</div>`;
 }
@@ -393,7 +393,7 @@ async function loadPosts(year, query = '') {
   if (posts.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">📝</div>
+        <div class="empty-icon"></div>
         <h3>لا توجد بوستات بعد</h3>
         <p>سيتم إضافة بوستات قريباً إن شاء الله</p>
       </div>

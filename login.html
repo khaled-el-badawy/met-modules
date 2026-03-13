@@ -145,7 +145,7 @@
   <!-- Login Page -->
   <main class="login-page">
     <div class="login-card">
-      <div class="login-logo">🔐</div>
+      <div class="login-logo"></div>
       <h1>تسجيل الدخول</h1>
       <p class="login-subtitle">لوحة تحكم Study With Me</p>
 
@@ -161,11 +161,11 @@
           <label for="login-password">كلمة المرور</label>
           <div class="password-wrapper">
             <input type="password" class="form-control" id="login-password" placeholder="••••••••" required dir="ltr" style="text-align:left;padding-left:40px;" autocomplete="current-password">
-            <button type="button" class="password-toggle" id="toggle-password" aria-label="إظهار كلمة المرور">👁</button>
+            <button type="button" class="password-toggle" id="toggle-password" aria-label="إظهار كلمة المرور"></button>
           </div>
         </div>
 
-        <button type="submit" class="btn-submit" id="login-btn">🔓 تسجيل الدخول</button>
+        <button type="submit" class="btn-submit" id="login-btn"> تسجيل الدخول</button>
       </form>
 
       <a href="index.html" class="login-back">→ العودة للصفحة الرئيسية</a>
@@ -195,7 +195,7 @@
         toggleBtn.addEventListener('click', () => {
           const isPassword = passwordInput.type === 'password';
           passwordInput.type = isPassword ? 'text' : 'password';
-          toggleBtn.textContent = isPassword ? '🙈' : '👁';
+          toggleBtn.textContent = isPassword ? '' : '';
         });
       }
 
@@ -208,7 +208,7 @@
         e.preventDefault();
         errorDiv.classList.remove('show');
         loginBtn.disabled = true;
-        loginBtn.textContent = '⏳ جاري تسجيل الدخول...';
+        loginBtn.textContent = ' جاري تسجيل الدخول...';
 
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
@@ -221,7 +221,7 @@
           errorDiv.textContent = result.message;
           errorDiv.classList.add('show');
           loginBtn.disabled = false;
-          loginBtn.textContent = '🔓 تسجيل الدخول';
+          loginBtn.textContent = ' تسجيل الدخول';
         }
       });
     });

@@ -169,7 +169,7 @@ function initSubjectForm() {
     e.preventDefault();
     const submitBtn = form.querySelector('.btn-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ جاري الإضافة...';
+    submitBtn.textContent = ' جاري الإضافة...';
 
     try {
       const name = document.getElementById('subject-name').value.trim();
@@ -188,7 +188,7 @@ function initSubjectForm() {
       showToast('حدث خطأ في إضافة المادة', 'error');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = '➕ إضافة المادة';
+      submitBtn.textContent = ' إضافة المادة';
     }
   });
 }
@@ -203,7 +203,7 @@ async function updateSubjectDropdowns(year, dropdownId) {
     return;
   }
 
-  dropdown.innerHTML = '<option value="">⏳ جاري التحميل...</option>';
+  dropdown.innerHTML = '<option value=""> جاري التحميل...</option>';
   const subjects = await DB.getAll('subjects', year);
 
   dropdown.innerHTML = '<option value="">اختار المادة</option>';
@@ -252,7 +252,7 @@ function initVideoForm() {
     e.preventDefault();
     const submitBtn = form.querySelector('.btn-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ جاري الإضافة...';
+    submitBtn.textContent = ' جاري الإضافة...';
 
     try {
       const title = document.getElementById('video-title').value.trim();
@@ -279,7 +279,7 @@ function initVideoForm() {
       showToast('حدث خطأ في إضافة الفيديو', 'error');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = '➕ إضافة الفيديو';
+      submitBtn.textContent = ' إضافة الفيديو';
     }
   });
 }
@@ -293,7 +293,7 @@ function initPDFForm() {
     e.preventDefault();
     const submitBtn = form.querySelector('.btn-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ جاري الإضافة...';
+    submitBtn.textContent = ' جاري الإضافة...';
 
     try {
       const title = document.getElementById('pdf-title').value.trim();
@@ -314,7 +314,7 @@ function initPDFForm() {
       showToast('حدث خطأ في إضافة الملف', 'error');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = '➕ إضافة الملف';
+      submitBtn.textContent = ' إضافة الملف';
     }
   });
 }
@@ -328,7 +328,7 @@ function initPostForm() {
     e.preventDefault();
     const submitBtn = form.querySelector('.btn-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ جاري النشر...';
+    submitBtn.textContent = ' جاري النشر...';
 
     try {
       const content = document.getElementById('post-content').value.trim();
@@ -349,7 +349,7 @@ function initPostForm() {
       showToast('حدث خطأ في نشر البوست', 'error');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = '➕ نشر البوست';
+      submitBtn.textContent = ' نشر البوست';
     }
   });
 }
@@ -368,7 +368,7 @@ function initUserForm() {
 
     const submitBtn = form.querySelector('.btn-submit');
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ جاري الإضافة...';
+    submitBtn.textContent = ' جاري الإضافة...';
 
     try {
       const email = document.getElementById('new-user-email').value.trim();
@@ -420,7 +420,7 @@ function initUserForm() {
       showToast(msg, 'error');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = '➕ إضافة المستخدم';
+      submitBtn.textContent = ' إضافة المستخدم';
     }
   });
 }
@@ -476,7 +476,7 @@ async function loadExistingItems(sectionId) {
   if (allItems.length === 0) {
     container.innerHTML = `
       <div class="empty-state" style="padding:40px 20px;">
-        <div class="empty-icon" style="font-size:2rem;">📭</div>
+        <div class="empty-icon" style="font-size:2rem;"></div>
         <h3 style="font-size:1rem;">لا توجد عناصر بعد</h3>
       </div>
     `;
@@ -490,13 +490,17 @@ async function loadExistingItems(sectionId) {
       if (item.role === 'super_admin') roleLabel = 'مدير عام (مؤسس)';
 
       let actionButtons = '';
+      const safeName = (item.name || 'بدون اسم').replace(/'/g, "\\'");
       if (item.id === currentUserUid) {
-        actionButtons = '<span style="color:var(--text-muted);font-size:0.8rem;">(حسابك)</span>';
+        actionButtons = `<button class="btn-submit" style="padding:4px 8px;font-size:0.8rem;margin-left:8px;" onclick="showUserHistory('${item.id}', '${safeName}')">سجل الإضافات </button>` +
+                        '<span style="color:var(--text-muted);font-size:0.8rem;">(حسابك)</span>';
       } else if (item.role === 'super_admin' && currentUserRole !== 'super_admin') {
-        actionButtons = '<span style="color:var(--text-muted);font-weight:bold;font-size:0.8rem;">👑 مؤسس النظام</span>';
+        actionButtons = `<button class="btn-submit" style="padding:4px 8px;font-size:0.8rem;margin-left:8px;" onclick="showUserHistory('${item.id}', '${safeName}')">سجل الإضافات </button>` +
+                        '<span style="color:var(--text-muted);font-weight:bold;font-size:0.8rem;"> مؤسس النظام</span>';
       } else {
-        actionButtons = `<button class="btn-danger" style="margin-right:8px;" onclick="deleteItem('${type}', '${item.id}')">حذف 🗑</button> 
-                          <button class="btn-submit" style="padding:4px 8px;font-size:0.8rem;" onclick="editAdminRole('${item.id}', '${item.role}')">تعديل الصلاحية ✏</button>`;
+        actionButtons = `<button class="btn-submit" style="padding:4px 8px;font-size:0.8rem;margin-left:8px;" onclick="showUserHistory('${item.id}', '${safeName}')">سجل الإضافات </button>
+                          <button class="btn-danger" style="margin-right:8px;" onclick="deleteItem('${type}', '${item.id}')">حذف </button> 
+                          <button class="btn-submit" style="padding:4px 8px;font-size:0.8rem;" onclick="editAdminRole('${item.id}', '${item.role}')">تعديل الصلاحية </button>`;
       }
 
       return `
@@ -522,7 +526,7 @@ async function loadExistingItems(sectionId) {
           <span>السنة ${yearLabels[item.year || item.yearNum]} ${item.subject ? '• ' + item.subject : ''} • ${formatDate(item.createdAt)}${item.createdBy ? ' • بواسطة: ' + item.createdBy : ''}</span>
         </div>
         <div class="item-actions">
-          ${canDelete ? `<button class="btn-danger" onclick="deleteItem('${type}', '${item.id}')">حذف 🗑</button>` : ''}
+          ${canDelete ? `<button class="btn-danger" onclick="deleteItem('${type}', '${item.id}')">حذف </button>` : ''}
         </div>
       </div>
     `;
@@ -577,3 +581,113 @@ window.editAdminRole = async function (id, currentRole) {
     showToast('حدث خطأ في تحديث الصلاحية', 'error');
   }
 };
+
+// ======== Show User History ========
+window.showUserHistory = async function(uid, userName) {
+  const modal = document.getElementById('user-history-modal');
+  const content = document.getElementById('user-history-content');
+  const title = document.getElementById('history-modal-title');
+  
+  if (title) title.innerHTML = `<span style="font-size: 1.5rem;"></span> سجل إضافات: ${userName}`;
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+  
+  content.innerHTML = `
+    <div style="text-align:center;padding:20px;color:var(--text-muted);">
+      <span class="loading-spinner"></span> جاري التحميل...
+    </div>
+  `;
+
+  try {
+    let allHistory = [];
+    
+    for (const type of ['videos', 'pdfs', 'posts']) {
+      const snapshot = await db.collection(type).where('createdByUid', '==', uid).get();
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        allHistory.push({
+          id: doc.id,
+          type: type,
+          ...data
+        });
+      });
+    }
+
+    // Sort by createdAt descending
+    allHistory.sort((a, b) => {
+      const t1 = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : 0) : 0;
+      const t2 = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : 0) : 0;
+      return t2 - t1;
+    });
+
+    if (allHistory.length === 0) {
+      content.innerHTML = `
+        <div style="text-align:center;padding:40px 20px; color:var(--text-muted);">
+          <div style="font-size:3rem;margin-bottom:10px;"></div>
+          <p>لم يقم هذا المستخدم بإضافة أي محتوى بعد.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const typeIcons = {
+      'videos': '',
+      'pdfs': '',
+      'posts': ''
+    };
+    
+    const typeLabel = {
+      'videos': 'فيديو',
+      'pdfs': 'ملف PDF',
+      'posts': 'بوست'
+    };
+
+    content.innerHTML = allHistory.map(item => {
+      const titleText = item.title || item.name || (item.content ? item.content.substring(0, 50) + '...' : 'بدون عنوان');
+      const dateText = item.createdAt ? formatDate(item.createdAt) : 'تاريخ غير معروف';
+      const subjectText = item.subject ? `المادة: ${item.subject}` : '';
+      const yearLabels = { '1': 'الأولى', '2': 'الثانية', '3': 'الثالثة', '4': 'الرابعة' };
+      const yearText = item.year ? `السنة: ${yearLabels[item.year] || item.year}` : '';
+      
+      let linkUrl = '#';
+      if (item.type === 'videos' || item.type === 'pdfs') {
+        linkUrl = item.url;
+      } else {
+        linkUrl = `year.html?year=${item.year}`;
+      }
+
+      // Google search history style look
+      return `
+        <div style="display: flex; align-items: flex-start; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(108, 99, 255, 0.1); background: var(--bg-surface); transition: background 0.2s; border-radius: var(--radius-sm); margin-bottom: 8px;">
+          <div style="font-size: 1.4rem; background: rgba(108, 99, 255, 0.08); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--primary); flex-shrink: 0;">
+            ${typeIcons[item.type] || ''}
+          </div>
+          <div style="flex-grow: 1; text-align: right;">
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 8px; font-size: 1rem; line-height: 1.4;">
+              ${titleText}
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="background: var(--gradient-primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold;">
+                ${typeLabel[item.type] || 'محتوى'}
+              </span>
+              <span> ${dateText}</span>
+              ${yearText ? `<span style="background: rgba(108, 99, 255, 0.08); color: var(--primary); padding: 2px 8px; border-radius: 12px; font-weight: 600;"> ${yearText}</span>` : ''}
+              ${subjectText ? `<span style="background: rgba(108, 99, 255, 0.08); color: var(--primary); padding: 2px 8px; border-radius: 12px; font-weight: 600;">${subjectText}</span>` : ''}
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+            <a href="${linkUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: rgba(108, 99, 255, 0.1); color: var(--primary); border-radius: 20px; text-decoration: none; font-size: 0.8rem; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='var(--gradient-primary)'; this.style.color='white';" onmouseout="this.style.background='rgba(108, 99, 255, 0.1)'; this.style.color='var(--primary)';">
+              عرض 
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (error) {
+    console.error('Error loading history:', error);
+    content.innerHTML = '<div style="color:var(--accent);text-align:center;padding:20px;">حدث خطأ في جلب بيانات السجل. تأكد من إعدادات الفايربيز (Indexes/Rules).</div>';
+  }
+};
+
