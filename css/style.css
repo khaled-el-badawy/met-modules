@@ -1388,9 +1388,8 @@ select.form-control {
   }
 }
 
-/* @media (max-width: 768px) { */
 @media (max-width: 1050px) {
-  @media (max-width: 768px) {
+  
     html {
       font-size: 15px;
     }
