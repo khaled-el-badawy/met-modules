@@ -4,25 +4,6 @@
    ====================================== */
 
 /* Google Fonts - Cairo for Arabic */
-<<<<<<< HEAD
-@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap");
-
-/* CSS Variables */
-:root {
-  --primary: #6c63ff;
-  --primary-light: #8b83ff;
-  --primary-dark: #4a42d4;
-  --secondary: #00d2ff;
-  --accent: #ff6b6b;
-  --accent-warm: #ffb347;
-  --bg-dark: #0a0e1a;
-  --bg-card: #111827;
-  --bg-card-hover: #1a2237;
-  --bg-surface: #0f1629;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-=======
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
 
 /* CSS Variables */
@@ -40,7 +21,6 @@
   --text-primary: #F1F5F9;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   --border-color: rgba(108, 99, 255, 0.15);
   --border-hover: rgba(108, 99, 255, 0.4);
   --glass-bg: rgba(17, 24, 39, 0.7);
@@ -56,22 +36,6 @@
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
-<<<<<<< HEAD
-  --gradient-primary: linear-gradient(135deg, #6c63ff, #00d2ff);
-  --gradient-warm: linear-gradient(135deg, #ff6b6b, #ffb347);
-  --gradient-hero: linear-gradient(
-    135deg,
-    #0a0e1a 0%,
-    #1a1040 50%,
-    #0a0e1a 100%
-  );
-
-  /* Year Colors */
-  --year1-color: #6c63ff;
-  --year2-color: #00d2ff;
-  --year3-color: #ff6b6b;
-  --year4-color: #ffb347;
-=======
   --gradient-primary: linear-gradient(135deg, #6C63FF, #00D2FF);
   --gradient-warm: linear-gradient(135deg, #FF6B6B, #FFB347);
   --gradient-hero: linear-gradient(135deg, #0A0E1A 0%, #1A1040 50%, #0A0E1A 100%);
@@ -81,7 +45,6 @@
   --year2-color: #00D2FF;
   --year3-color: #FF6B6B;
   --year4-color: #FFB347;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 }
 
 /* Reset & Base */
@@ -99,11 +62,7 @@ html {
 }
 
 body {
-<<<<<<< HEAD
-  font-family: "Cairo", sans-serif;
-=======
   font-family: 'Cairo', sans-serif;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   background-color: var(--bg-dark);
   color: var(--text-primary);
   direction: rtl;
@@ -213,10 +172,7 @@ select {
 }
 
 @keyframes float {
-<<<<<<< HEAD
-=======
 
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   0%,
   100% {
     transform: translate(0, 0) scale(1);
@@ -317,10 +273,7 @@ select {
   align-items: center;
   justify-content: space-around;
   gap: 8px;
-<<<<<<< HEAD
-=======
 
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 }
 
 @media (max-width: 768px) {
@@ -347,11 +300,7 @@ select {
 }
 
 .navbar-links a.active::after {
-<<<<<<< HEAD
-  content: "";
-=======
   content: '';
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   position: absolute;
   bottom: -5px;
   right: 50%;
@@ -371,14 +320,6 @@ select {
   font-size: 0.9rem;
   transition: var(--transition-normal);
   box-shadow: 0 0 15px rgba(108, 99, 255, 0.3);
-<<<<<<< HEAD
-
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-=======
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 }
 
 .btn-admin:hover {
@@ -432,20 +373,13 @@ select {
 .hero-badge .badge-dot {
   width: 8px;
   height: 8px;
-<<<<<<< HEAD
-  background: #4ade80;
-=======
   background: #4ADE80;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   border-radius: 50%;
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
 @keyframes pulse-dot {
-<<<<<<< HEAD
-=======
 
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   0%,
   100% {
     opacity: 1;
@@ -552,11 +486,7 @@ select {
 }
 
 .year-card::before {
-<<<<<<< HEAD
-  content: "";
-=======
   content: '';
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   position: absolute;
   top: 0;
   left: 0;
@@ -569,13 +499,7 @@ select {
 .year-card:hover {
   transform: translateY(-8px);
   border-color: var(--card-color);
-<<<<<<< HEAD
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.3),
-    0 0 30px color-mix(in srgb, var(--card-color) 20%, transparent);
-=======
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 30px color-mix(in srgb, var(--card-color) 20%, transparent);
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 }
 
 .year-card:hover::before {
@@ -1268,22 +1192,12 @@ select.form-control {
   align-items: center;
   gap: 10px;
   box-shadow: var(--shadow-lg);
-<<<<<<< HEAD
-  animation:
-    toastIn 0.4s ease,
-    toastOut 0.4s ease 2.5s forwards;
-=======
   animation: toastIn 0.4s ease, toastOut 0.4s ease 2.5s forwards;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   pointer-events: auto;
 }
 
 .toast.success {
-<<<<<<< HEAD
-  border-color: #4ade80;
-=======
   border-color: #4ADE80;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 }
 
 .toast.error {
@@ -1366,11 +1280,7 @@ select.form-control {
   background: rgba(74, 222, 128, 0.1);
   border: 1px solid rgba(74, 222, 128, 0.2);
   border-radius: 50px;
-<<<<<<< HEAD
-  color: #4ade80;
-=======
   color: #4ADE80;
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -1437,21 +1347,12 @@ select.form-control {
   }
 }
 
-<<<<<<< HEAD
-/* @media (max-width: 768px) { */
-@media (max-width: 1050px) {
-=======
 @media (max-width: 768px) {
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   html {
     font-size: 15px;
   }
 
   .navbar-links {
-<<<<<<< HEAD
-    width: 100%;
-=======
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
     display: none;
     position: fixed;
     top: 0;
@@ -1479,13 +1380,7 @@ select.form-control {
     display: block;
     z-index: 1001;
   }
-<<<<<<< HEAD
-}
 
-@media (max-width: 768px) {
-=======
-
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
   .hero h1 {
     font-size: 2.2rem;
   }
@@ -1737,10 +1632,7 @@ select.form-control {
   color: #fff;
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 /* Fix mobile menu background filtering */
 .navbar.menu-open {
   backdrop-filter: none !important;
@@ -1752,17 +1644,11 @@ select.form-control {
   .navbar-links {
     width: 100%;
     height: 100vh;
-<<<<<<< HEAD
-  }
-}
-
-=======
 
   }
 }
 
 
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
 .footer-dev-link {
   display: inline-flex;
   align-items: center;
@@ -1777,8 +1663,4 @@ select.form-control {
 .footer-dev-link:hover {
   color: white;
   transform: translateY(-2px);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c647f2550656b7beb06df55c98c3c0e52145addc
